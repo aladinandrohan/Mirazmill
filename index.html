@@ -1,0 +1,1957 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sri Lakshmi Flour Mill — AI Powered</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+
+        :root {
+            --wheat: #D4A574;
+            --wheat-light: #E8C9A0;
+            --wheat-dark: #B8860B;
+            --forest: #2D5016;
+            --forest-light: #3D6B1F;
+            --cream: #FDF8F0;
+            --cream-dark: #F5E6D3;
+            --ink: #1A1A1A;
+            --ink-light: #333333;
+            --gold: #C9A96E;
+            --ai-blue: #2563EB;
+            --ai-glow: rgba(37, 99, 235, 0.3);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--cream);
+            color: var(--ink);
+            overflow-x: hidden;
+            width: 100vw;
+            height: 100vh;
+            position: fixed;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* ===== PAGE CONTAINER ===== */
+        .page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            overflow-x: hidden;
+            background: var(--cream);
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease, filter 0.4s ease;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .page.hidden-right {
+            transform: translateX(100%);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .page.hidden-left {
+            transform: translateX(-30%);
+            opacity: 0.7;
+            pointer-events: none;
+            filter: brightness(0.8);
+        }
+
+        .page.active {
+            transform: translateX(0);
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .page.blurred {
+            filter: blur(8px) brightness(0.6);
+            pointer-events: none;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            background: linear-gradient(135deg, var(--forest) 0%, var(--forest-light) 100%);
+            padding: 20px 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(212, 165, 116, 0.2), transparent);
+            border-radius: 50%;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--wheat), var(--wheat-dark));
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+        }
+
+        .logo-text {
+            color: white;
+        }
+
+        .logo-text h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .logo-text p {
+            font-size: 11px;
+            opacity: 0.8;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .ai-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            background: rgba(37, 99, 235, 0.2);
+            border: 1px solid rgba(37, 99, 235, 0.4);
+            border-radius: 100px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #60A5FA;
+            backdrop-filter: blur(10px);
+        }
+
+        .ai-badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: #60A5FA;
+            border-radius: 50%;
+            animation: aiPulse 2s infinite;
+        }
+
+        @keyframes aiPulse {
+            0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(96, 165, 250, 0.4); }
+            50% { opacity: 0.7; box-shadow: 0 0 0 8px rgba(96, 165, 250, 0); }
+        }
+
+        .hero-content {
+            color: white;
+            text-align: center;
+            padding: 20px 0 10px;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 100px;
+            font-size: 11px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+
+        .hero-badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: #4ADE80;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            font-weight: 600;
+            line-height: 1.2;
+            margin-bottom: 12px;
+        }
+
+        .hero-title span {
+            color: var(--wheat-light);
+        }
+
+        .hero-desc {
+            font-size: 15px;
+            opacity: 0.85;
+            line-height: 1.6;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+
+        .features-bar {
+            display: flex;
+            justify-content: space-around;
+            padding: 20px 16px;
+            background: white;
+            margin: -20px 16px 0;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+            position: relative;
+            z-index: 10;
+        }
+
+        .feature-item {
+            text-align: center;
+        }
+
+        .feature-icon {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, var(--wheat-light), var(--wheat));
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin: 0 auto 8px;
+        }
+
+        .feature-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--ink-light);
+        }
+
+        .feature-sub {
+            font-size: 10px;
+            color: #888;
+            margin-top: 2px;
+        }
+
+        .section {
+            padding: 40px 20px;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .section-label {
+            font-size: 11px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--wheat-dark);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 26px;
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            cursor: pointer;
+            position: relative;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .product-card:active {
+            transform: scale(0.97);
+            border-color: var(--wheat);
+        }
+
+        .product-card.holding {
+            transform: scale(1.02);
+            border-color: var(--ai-blue);
+            box-shadow: 0 0 30px var(--ai-glow);
+            z-index: 5;
+        }
+
+        .ai-hint {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, var(--ai-blue), #1D4ED8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+            opacity: 0;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px var(--ai-glow);
+        }
+
+        .product-card.holding .ai-hint {
+            opacity: 1;
+            animation: aiBounce 0.5s ease infinite;
+        }
+
+        @keyframes aiBounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .hold-indicator {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(to right, var(--ai-blue), #60A5FA);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.1s linear;
+            border-radius: 0 0 20px 20px;
+        }
+
+        .product-card.holding .hold-indicator {
+            animation: holdProgress 0.8s linear forwards;
+        }
+
+        @keyframes holdProgress {
+            from { transform: scaleX(0); }
+            to { transform: scaleX(1); }
+        }
+
+        .product-image {
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .img-wheat { background: linear-gradient(135deg, #E8D5B7 0%, #D4A574 50%, #C9956A 100%); }
+        .img-rice { background: linear-gradient(135deg, #F5F5F5 0%, #E8E8E8 50%, #DDD 100%); }
+        .img-mustard { background: linear-gradient(135deg, #FFD700 0%, #DAA520 50%, #B8860B 100%); }
+        .img-dal { background: linear-gradient(135deg, #D2B48C 0%, #C19A6B 50%, #A0522D 100%); }
+        .img-corn { background: linear-gradient(135deg, #FFF8DC 0%, #F0E68C 50%, #DAA520 100%); }
+        .img-masala { background: linear-gradient(135deg, #CD5C5C 0%, #8B4513 50%, #A0522D 100%); }
+        .img-coconut { background: linear-gradient(135deg, #FFFAF0 0%, #F5F5DC 50%, #D2B48C 100%); }
+        .img-sunflower { background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FF8C00 100%); }
+
+        .product-image::before {
+            font-size: 60px;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+            z-index: 2;
+            position: relative;
+        }
+
+        .img-wheat::before { content: '🌾'; }
+        .img-rice::before { content: '🍚'; }
+        .img-mustard::before { content: '🥜'; }
+        .img-dal::before { content: '🫘'; }
+        .img-corn::before { content: '🌽'; }
+        .img-masala::before { content: '☕'; }
+        .img-coconut::before { content: '🥥'; }
+        .img-sunflower::before { content: '🌻'; }
+
+        .product-info {
+            padding: 14px;
+        }
+
+        .product-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .product-desc {
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .product-price {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--forest);
+        }
+
+        .order-btn {
+            width: 100%;
+            margin-top: 10px;
+            padding: 10px;
+            background: linear-gradient(135deg, var(--forest), var(--forest-light));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .order-btn:active {
+            transform: scale(0.96);
+            opacity: 0.9;
+        }
+
+        /* ===== AI KNOWLEDGE POPUP ===== */
+        .ai-popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(12px);
+            z-index: 500;
+            display: none;
+            justify-content: center;
+            align-items: flex-end;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .ai-popup-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .ai-popup {
+            background: linear-gradient(180deg, #1E293B 0%, #0F172A 100%);
+            width: 100%;
+            max-width: 430px;
+            border-radius: 32px 32px 0 0;
+            padding: 28px 24px 40px;
+            transform: translateY(100%);
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            max-height: 85vh;
+            overflow-y: auto;
+            border-top: 1px solid rgba(96, 165, 250, 0.2);
+        }
+
+        .ai-popup-overlay.active .ai-popup {
+            transform: translateY(0);
+        }
+
+        .ai-popup-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .ai-avatar {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--ai-blue), #1D4ED8);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 4px 16px var(--ai-glow);
+        }
+
+        .ai-popup-header h3 {
+            color: white;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .ai-popup-header p {
+            color: #94A3B8;
+            font-size: 13px;
+        }
+
+        .ai-close {
+            margin-left: auto;
+            width: 36px;
+            height: 36px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            border: none;
+        }
+
+        .ai-content {
+            color: #E2E8F0;
+            line-height: 1.7;
+        }
+
+        .ai-section {
+            margin-bottom: 20px;
+            padding: 16px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .ai-section h4 {
+            color: #60A5FA;
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ai-section p {
+            font-size: 14px;
+            color: #CBD5E1;
+        }
+
+        .ai-loading {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 20px;
+            color: #94A3B8;
+        }
+
+        .ai-dots {
+            display: flex;
+            gap: 4px;
+        }
+
+        .ai-dots span {
+            width: 8px;
+            height: 8px;
+            background: #60A5FA;
+            border-radius: 50%;
+            animation: dotBounce 1.4s ease infinite;
+        }
+
+        .ai-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .ai-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes dotBounce {
+            0%, 80%, 100% { transform: scale(0.6); opacity: 0.5; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+
+        /* ===== FLOATING AI BUTTON ===== */
+        .ai-float-btn {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--ai-blue), #1D4ED8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 28px;
+            cursor: pointer;
+            box-shadow: 0 8px 32px var(--ai-glow);
+            z-index: 400;
+            border: none;
+            transition: all 0.3s;
+            animation: aiFloat 3s ease infinite;
+        }
+
+        .ai-float-btn:active {
+            transform: scale(0.9);
+        }
+
+        @keyframes aiFloat {
+            0%, 100% { transform: translateY(0); box-shadow: 0 8px 32px var(--ai-glow); }
+            50% { transform: translateY(-8px); box-shadow: 0 16px 48px rgba(37, 99, 235, 0.4); }
+        }
+
+        /* ===== AI CHAT PANEL ===== */
+        .ai-chat-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(16px);
+            z-index: 600;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .ai-chat-overlay.active {
+            display: block;
+            opacity: 1;
+        }
+
+        .ai-chat-panel {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 90%;
+            background: linear-gradient(180deg, #1E293B 0%, #0F172A 100%);
+            border-radius: 32px 32px 0 0;
+            display: flex;
+            flex-direction: column;
+            transform: translateY(100%);
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            border-top: 1px solid rgba(96, 165, 250, 0.2);
+        }
+
+        .ai-chat-overlay.active .ai-chat-panel {
+            transform: translateY(0);
+        }
+
+        .ai-chat-header {
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .ai-chat-header h3 {
+            color: white;
+            font-size: 18px;
+        }
+
+        .ai-chat-header p {
+            color: #94A3B8;
+            font-size: 12px;
+        }
+
+        .ai-chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .ai-message {
+            max-width: 85%;
+            padding: 14px 18px;
+            border-radius: 20px;
+            font-size: 14px;
+            line-height: 1.6;
+            animation: messageIn 0.3s ease;
+        }
+
+        @keyframes messageIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .ai-message.bot {
+            background: rgba(96, 165, 250, 0.15);
+            color: #E2E8F0;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+
+        .ai-message.user {
+            background: linear-gradient(135deg, var(--forest), var(--forest-light));
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+
+        .ai-chat-input {
+            padding: 16px 20px 30px;
+            display: flex;
+            gap: 10px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .ai-chat-input input {
+            flex: 1;
+            padding: 14px 18px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 16px;
+            color: white;
+            font-size: 15px;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .ai-chat-input input::placeholder {
+            color: #64748B;
+        }
+
+        .ai-send-btn {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--ai-blue), #1D4ED8);
+            border: none;
+            border-radius: 16px;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .ai-send-btn:active {
+            transform: scale(0.9);
+        }
+
+        /* ===== ORDER PAGE ===== */
+        .order-page {
+            background: var(--ink) !important;
+        }
+
+        .order-hero-image {
+            width: 100%;
+            height: 280px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .order-hero-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, transparent 50%, var(--ink) 100%);
+            z-index: 2;
+        }
+
+        .order-hero-image .big-emoji {
+            font-size: 120px;
+            filter: drop-shadow(0 8px 24px rgba(0,0,0,0.4));
+            z-index: 1;
+            animation: floatIn 0.6s ease;
+        }
+
+        @keyframes floatIn {
+            from { transform: scale(0.5); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .back-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.5), transparent);
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 8px 12px;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            border: none;
+        }
+
+        .back-btn:active {
+            opacity: 0.7;
+        }
+
+        .share-btn {
+            width: 40px;
+            height: 40px;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(10px);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .order-title-section {
+            padding: 0 20px 20px;
+            margin-top: -30px;
+            position: relative;
+            z-index: 3;
+        }
+
+        .order-title-section h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 8px;
+            line-height: 1.2;
+        }
+
+        .order-title-section .subtitle {
+            font-size: 15px;
+            color: rgba(255,255,255,0.6);
+            line-height: 1.5;
+        }
+
+        .order-title-section .price-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 12px;
+            padding: 8px 16px;
+            background: var(--gold);
+            border-radius: 100px;
+            color: var(--ink);
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .order-form-container {
+            background: var(--cream);
+            border-radius: 30px 30px 0 0;
+            padding: 28px 20px 40px;
+            min-height: calc(100vh - 380px);
+        }
+
+        .form-section {
+            margin-bottom: 24px;
+        }
+
+        .form-section-title {
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--ink-light);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-section-title::before {
+            content: '';
+            width: 4px;
+            height: 16px;
+            background: var(--forest);
+            border-radius: 2px;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 16px 18px;
+            border: 2px solid #E5E5E5;
+            border-radius: 16px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s;
+            font-family: inherit;
+            background: white;
+            margin-bottom: 12px;
+        }
+
+        .input-field:focus {
+            border-color: var(--forest);
+            box-shadow: 0 0 0 4px rgba(45, 80, 22, 0.1);
+        }
+
+        .option-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px;
+            background: white;
+            border: 2px solid #E5E5E5;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .option-item:active {
+            transform: scale(0.98);
+        }
+
+        .option-item.selected {
+            border-color: var(--forest);
+            background: linear-gradient(135deg, rgba(45, 80, 22, 0.05), rgba(45, 80, 22, 0.02));
+        }
+
+        .option-checkbox {
+            width: 24px;
+            height: 24px;
+            border: 2px solid #CCC;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.3s;
+            font-size: 14px;
+            color: white;
+        }
+
+        .option-item.selected .option-checkbox {
+            background: var(--forest);
+            border-color: var(--forest);
+        }
+
+        .option-text {
+            flex: 1;
+        }
+
+        .option-text h4 {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .option-text p {
+            font-size: 13px;
+            color: #888;
+        }
+
+        .option-price {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--forest);
+        }
+
+        .qty-slider-container {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            border: 2px solid #E5E5E5;
+        }
+
+        .qty-display {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .qty-display .number {
+            font-family: 'Playfair Display', serif;
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--forest);
+            line-height: 1;
+        }
+
+        .qty-display .unit {
+            font-size: 18px;
+            color: var(--ink-light);
+            font-weight: 600;
+        }
+
+        .slider-wrapper {
+            position: relative;
+            padding: 10px 0;
+        }
+
+        .range-slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: #E5E5E5;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--forest), var(--forest-light));
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(45, 80, 22, 0.4);
+            border: 3px solid white;
+        }
+
+        .range-slider::-moz-range-thumb {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--forest), var(--forest-light));
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(45, 80, 22, 0.4);
+            border: 3px solid white;
+        }
+
+        .qty-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 12px;
+            color: #888;
+        }
+
+        .qty-presets {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+
+        .qty-preset {
+            padding: 8px 16px;
+            background: #F5F5F5;
+            border: 2px solid transparent;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .qty-preset.active {
+            background: var(--forest);
+            color: white;
+            border-color: var(--forest);
+        }
+
+        .qty-preset:active {
+            transform: scale(0.95);
+        }
+
+        .total-card {
+            background: linear-gradient(135deg, var(--forest), var(--forest-light));
+            border-radius: 24px;
+            padding: 24px;
+            color: white;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(45, 80, 22, 0.3);
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 15px;
+        }
+
+        .total-row:last-child {
+            margin-bottom: 0;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .total-row .label {
+            opacity: 0.8;
+        }
+
+        .whatsapp-submit {
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            box-shadow: 0 8px 32px rgba(37, 211, 102, 0.4);
+            transition: all 0.3s;
+            margin-bottom: 30px;
+        }
+
+        .whatsapp-submit:active {
+            transform: scale(0.97);
+        }
+
+        .whatsapp-submit .icon {
+            width: 28px;
+            height: 28px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            padding: 30px 24px;
+            text-align: center;
+            background: var(--ink);
+            color: white;
+        }
+
+        .footer h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+        .footer h3 span {
+            color: var(--wheat);
+        }
+
+        .footer p {
+            font-size: 12px;
+            opacity: 0.5;
+            margin-top: 8px;
+        }
+
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar {
+            width: 0;
+            background: transparent;
+        }
+
+        /* ===== ANIMATIONS ===== */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-in {
+            opacity: 0;
+            animation: fadeUp 0.8s ease forwards;
+        }
+
+        .delay-1 { animation-delay: 0.2s; }
+        .delay-2 { animation-delay: 0.4s; }
+        .delay-3 { animation-delay: 0.6s; }
+    </style>
+</head>
+<body>
+
+    <!-- ========== HOME PAGE ========== -->
+    <div class="page active" id="homePage">
+        <header class="header">
+            <div class="header-top">
+                <div class="logo">
+                    <div class="logo-icon">🌾</div>
+                    <div class="logo-text">
+                        <h1>Sri Lakshmi</h1>
+                        <p>Flour Mill</p>
+                    </div>
+                </div>
+                <div class="ai-badge">AI Powered</div>
+            </div>
+            <div class="hero-content">
+                <div class="hero-badge">Open Now — Accepting Orders</div>
+                <h2 class="hero-title">Premium Grinding <span>Services</span></h2>
+                <p class="hero-desc">Bring your wheat, rice, pulses & seeds. We grind them fresh with traditional quality and modern hygiene.</p>
+            </div>
+        </header>
+
+        <div class="features-bar animate-in delay-1">
+            <div class="feature-item">
+                <div class="feature-icon">⚡</div>
+                <div class="feature-label">Fast Service</div>
+                <div class="feature-sub">Same Day</div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">✨</div>
+                <div class="feature-label">Clean & Hygienic</div>
+                <div class="feature-sub">Guaranteed</div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">🏠</div>
+                <div class="feature-label">Home Delivery</div>
+                <div class="feature-sub">Available</div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">🤖</div>
+                <div class="feature-label">AI Assistant</div>
+                <div class="feature-sub">Ask Anything</div>
+            </div>
+        </div>
+
+        <section class="section">
+            <div class="section-header animate-in delay-2">
+                <div class="section-label">Our Services</div>
+                <h2 class="section-title">What We Grind For You</h2>
+                <p style="font-size: 13px; color: #888; margin-top: 8px;">👆 <strong>Hold any item</strong> to learn about it with AI</p>
+            </div>
+            <div class="products-grid" id="productsGrid"></div>
+        </section>
+
+        <section class="section" style="background: white;">
+            <div class="section-header animate-in">
+                <div class="section-label">Simple Process</div>
+                <h2 class="section-title">How to Order</h2>
+            </div>
+            <div class="steps">
+                <div class="step animate-in delay-1">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h4>Select Your Item</h4>
+                        <p>Choose what you want ground — wheat, rice, dal, or oil seeds</p>
+                    </div>
+                </div>
+                <div class="step animate-in delay-2">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h4>Choose Options</h4>
+                        <p>With husk, without waste, or custom preferences</p>
+                    </div>
+                </div>
+                <div class="step animate-in delay-3">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h4>Send via WhatsApp</h4>
+                        <p>Click order and message us directly on WhatsApp</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section style="background: linear-gradient(135deg, var(--forest), var(--forest-light)); padding: 40px 24px; text-align: center; color: white;">
+            <h2 style="font-family: 'Playfair Display', serif; font-size: 26px; margin-bottom: 12px;">Visit Us Today</h2>
+            <p style="opacity: 0.85; margin-bottom: 24px; font-size: 15px;">We are located in your village. Come with your grains or order online.</p>
+            <div style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; padding: 24px; margin-bottom: 16px; text-align: left;">
+                <h4 style="font-size: 13px; text-transform: uppercase; letter-spacing: 2px; opacity: 0.7; margin-bottom: 8px;">WhatsApp Number</h4>
+                <p style="font-size: 16px; font-weight: 600; margin: 0; opacity: 1;">+91 93826 96637</p>
+            </div>
+            <div style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; padding: 24px; margin-bottom: 16px; text-align: left;">
+                <h4 style="font-size: 13px; text-transform: uppercase; letter-spacing: 2px; opacity: 0.7; margin-bottom: 8px;">Timing</h4>
+                <p style="font-size: 16px; font-weight: 600; margin: 0; opacity: 1;">6:00 AM — 8:00 PM (Daily)</p>
+            </div>
+            <a href="https://wa.me/919382696637?text=Hi!%20I%20want%20to%20know%20more%20about%20your%20grinding%20services." style="display: inline-flex; align-items: center; gap: 10px; padding: 16px 32px; background: #25D366; color: white; border-radius: 16px; font-size: 16px; font-weight: 700; text-decoration: none; margin-top: 8px; box-shadow: 0 8px 32px rgba(37, 211, 102, 0.4);">
+                <span>💬</span> Chat on WhatsApp
+            </a>
+        </section>
+
+        <footer class="footer">
+            <h3>Sri <span>Lakshmi</span> Flour Mill</h3>
+            <p>Traditional Quality • Modern Service • AI Powered • Since 2010</p>
+            <p style="margin-top: 16px;">Made with ❤️ for your family</p>
+        </footer>
+    </div>
+
+    <!-- ========== ORDER PAGE ========== -->
+    <div class="page hidden-right order-page" id="orderPage">
+        <div class="order-hero-image" id="orderHeroImage">
+            <div class="back-overlay">
+                <button class="back-btn" onclick="goBack()">
+                    <span>←</span> Back
+                </button>
+                <button class="share-btn" onclick="shareProduct()">↗</button>
+            </div>
+            <div class="big-emoji" id="orderBigEmoji">🌾</div>
+        </div>
+
+        <div class="order-title-section">
+            <h1 id="orderTitle">Wheat Grinding</h1>
+            <p class="subtitle" id="orderSubtitle">Fresh atta from your wheat grains</p>
+            <div class="price-tag" id="orderPriceTag">₹3 per kg</div>
+        </div>
+
+        <div class="order-form-container">
+            <div class="form-section">
+                <div class="form-section-title">Your Details</div>
+                <input type="text" class="input-field" id="customerName" placeholder="Your full name *">
+                <input type="tel" class="input-field" id="customerPhone" placeholder="Phone number *">
+            </div>
+
+            <div class="form-section">
+                <div class="form-section-title">Grinding Options</div>
+                <div class="option-list" id="optionsList"></div>
+            </div>
+
+            <div class="form-section">
+                <div class="form-section-title">Select Quantity</div>
+                <div class="qty-slider-container">
+                    <div class="qty-display">
+                        <span class="number" id="qtyNumber">5</span>
+                        <span class="unit" id="qtyUnit">kg</span>
+                    </div>
+                    <div class="slider-wrapper">
+                        <input type="range" class="range-slider" id="qtySlider" min="0.5" max="20" step="0.5" value="5" oninput="updateQuantity(this.value)">
+                    </div>
+                    <div class="qty-labels">
+                        <span>500g</span>
+                        <span>10 kg</span>
+                        <span>20 kg</span>
+                    </div>
+                    <div class="qty-presets" id="qtyPresets">
+                        <button class="qty-preset active" onclick="setQuantity(1)">1 kg</button>
+                        <button class="qty-preset" onclick="setQuantity(5)">5 kg</button>
+                        <button class="qty-preset" onclick="setQuantity(10)">10 kg</button>
+                        <button class="qty-preset" onclick="setQuantity(20)">20 kg</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="total-card">
+                <div class="total-row">
+                    <span class="label">Service</span>
+                    <span id="totalService">Wheat Grinding</span>
+                </div>
+                <div class="total-row">
+                    <span class="label">Quantity</span>
+                    <span id="totalQty">5 kg</span>
+                </div>
+                <div class="total-row">
+                    <span class="label">Rate</span>
+                    <span id="totalRate">₹3/kg</span>
+                </div>
+                <div class="total-row" id="optionsRow" style="display: none;">
+                    <span class="label">Options</span>
+                    <span id="totalOptions">—</span>
+                </div>
+                <div class="total-row">
+                    <span class="label">Total Amount</span>
+                    <span id="totalAmount">₹15</span>
+                </div>
+            </div>
+
+            <button class="whatsapp-submit" onclick="sendOrder()">
+                <div class="icon">💬</div>
+                <span>Continue to WhatsApp</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- ========== AI KNOWLEDGE POPUP ========== -->
+    <div class="ai-popup-overlay" id="aiPopup">
+        <div class="ai-popup">
+            <div class="ai-popup-header">
+                <div class="ai-avatar">🤖</div>
+                <div>
+                    <h3>AI Knowledge</h3>
+                    <p>Powered by Smart Assistant</p>
+                </div>
+                <button class="ai-close" onclick="closeAiPopup()">✕</button>
+            </div>
+            <div class="ai-content" id="aiContent">
+                <div class="ai-loading">
+                    <div class="ai-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <span>Learning about this item...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== FLOATING AI BUTTON ========== -->
+    <button class="ai-float-btn" onclick="openAiChat()" title="Ask AI Assistant">🤖</button>
+
+    <!-- ========== AI CHAT PANEL ========== -->
+    <div class="ai-chat-overlay" id="aiChatOverlay">
+        <div class="ai-chat-panel">
+            <div class="ai-chat-header">
+                <div class="ai-avatar">🤖</div>
+                <div style="flex: 1;">
+                    <h3>AI Assistant</h3>
+                    <p>Ask me anything about our services</p>
+                </div>
+                <button class="ai-close" onclick="closeAiChat()">✕</button>
+            </div>
+            <div class="ai-chat-messages" id="aiChatMessages">
+                <div class="ai-message bot">
+                    👋 Hello! I'm your AI assistant. I can help you with:<br><br>
+                    • Understanding our grinding services<br>
+                    • Explaining health benefits of each grain<br>
+                    • Suggesting the best options for your needs<br>
+                    • Answering any questions about pricing<br><br>
+                    What would you like to know?
+                </div>
+            </div>
+            <div class="ai-chat-input">
+                <input type="text" id="aiChatInput" placeholder="Ask me anything..." onkeypress="if(event.key==='Enter')sendAiMessage()">
+                <button class="ai-send-btn" onclick="sendAiMessage()">➤</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== API CONFIGURATION =====
+        const API_KEY = 'arch_e56ddf4ae40b854093a1a50f07ac468149ddd58eac3501fe';
+        const API_URL = 'https://api.moonshot.cn/v1/chat/completions';
+
+        // ===== PRODUCT DATA =====
+        const products = [
+            {
+                id: 1,
+                emoji: '🌾',
+                name: 'Wheat Grinding',
+                subtitle: 'Fresh atta from your wheat grains',
+                price: 3,
+                unit: 'kg',
+                imageClass: 'img-wheat',
+                aiPrompt: 'Wheat flour (atta). Explain: 1) Origin and history of wheat in India, 2) Health benefits of whole wheat atta, 3) Different types of wheat grinding (fine, coarse, with bran), 4) Best uses for chapati, paratha, etc. Keep it informative and friendly.',
+                options: [
+                    { id: 'with_bran', name: 'With Bran (Choker)', desc: 'Includes healthy wheat bran', price: 0 },
+                    { id: 'without_waste', name: 'Without Waste', desc: 'Clean grinding, no husk', price: 2 },
+                    { id: 'fine', name: 'Fine Grinding', desc: 'Extra smooth flour', price: 1 },
+                    { id: 'coarse', name: 'Coarse Grinding', desc: 'Thick texture for roti', price: 0 }
+                ]
+            },
+            {
+                id: 2,
+                emoji: '🍚',
+                name: 'Rice Grinding',
+                subtitle: 'Fine rice flour for cooking and sweets',
+                price: 4,
+                unit: 'kg',
+                imageClass: 'img-rice',
+                aiPrompt: 'Rice flour. Explain: 1) Types of rice used for grinding, 2) Health benefits and nutritional value, 3) Uses in Indian cuisine (idli, dosa, sweets), 4) Difference between fine and coarse rice flour. Keep it informative and friendly.',
+                options: [
+                    { id: 'fine_rice', name: 'Fine Powder', desc: 'Smooth rice flour', price: 0 },
+                    { id: 'coarse_rice', name: 'Coarse Powder', desc: 'For idli and dosa', price: 0 },
+                    { id: 'roasted', name: 'Roasted First', desc: 'Enhanced flavor', price: 2 }
+                ]
+            },
+            {
+                id: 3,
+                emoji: '🥜',
+                name: 'Mustard Oil',
+                subtitle: 'Pure kachi ghani cold-pressed oil',
+                price: 5,
+                unit: 'kg',
+                imageClass: 'img-mustard',
+                aiPrompt: 'Mustard oil (sarso ka tel). Explain: 1) Traditional extraction methods (kachi ghani), 2) Health benefits and medicinal properties, 3) Uses in Bengali and North Indian cooking, 4) Why cold-pressed is better. Keep it informative and friendly.',
+                options: [
+                    { id: 'cold_press', name: 'Cold Pressed', desc: 'Traditional kachi ghani', price: 0 },
+                    { id: 'double_filter', name: 'Double Filtered', desc: 'Extra pure and clean', price: 3 },
+                    { id: 'organic', name: 'Organic Process', desc: 'No chemicals used', price: 2 }
+                ]
+            },
+            {
+                id: 4,
+                emoji: '🫘',
+                name: 'Dal / Pulse Grinding',
+                subtitle: 'Besan, dal flour and custom mixes',
+                price: 4,
+                unit: 'kg',
+                imageClass: 'img-dal',
+                aiPrompt: 'Pulse flour (besan, dal atta). Explain: 1) Types of pulses used (chana, urad, moong), 2) Protein content and health benefits, 3) Popular dishes (pakora, dhokla, dosa), 4) Why freshly ground is better than store-bought. Keep it informative and friendly.',
+                options: [
+                    { id: 'besan', name: 'Besan (Gram Flour)', desc: 'Fine chickpea flour', price: 0 },
+                    { id: 'urad', name: 'Urad Dal Flour', desc: 'For dosa and idli', price: 0 },
+                    { id: 'moong', name: 'Moong Dal Flour', desc: 'Light and healthy', price: 0 },
+                    { id: 'mix', name: 'Mixed Dal Flour', desc: 'Custom combination', price: 1 }
+                ]
+            },
+            {
+                id: 5,
+                emoji: '🌽',
+                name: 'Corn Grinding',
+                subtitle: 'Makka atta for delicious roti',
+                price: 3,
+                unit: 'kg',
+                imageClass: 'img-corn',
+                aiPrompt: 'Corn flour (makka atta). Explain: 1) Types of corn used, 2) Health benefits (gluten-free, high fiber), 3) Traditional uses (makki di roti, cornbread), 4) Nutritional comparison with wheat. Keep it informative and friendly.',
+                options: [
+                    { id: 'yellow', name: 'Yellow Corn', desc: 'Sweet and tasty', price: 0 },
+                    { id: 'white', name: 'White Corn', desc: 'Traditional makka', price: 0 },
+                    { id: 'roasted_corn', name: 'Roasted First', desc: 'Enhanced flavor', price: 2 }
+                ]
+            },
+            {
+                id: 6,
+                emoji: '☕',
+                name: 'Masala Grinding',
+                subtitle: 'Custom spice mixes and pure powders',
+                price: 10,
+                unit: 'kg',
+                imageClass: 'img-masala',
+                aiPrompt: 'Spice grinding (masala). Explain: 1) Popular Indian spices and their benefits, 2) Why fresh-ground spices are more flavorful, 3) Health benefits of turmeric, cumin, coriander, 4) Custom masala blends for different cuisines. Keep it informative and friendly.',
+                options: [
+                    { id: 'pure', name: 'Pure Single Spice', desc: 'One spice only', price: 0 },
+                    { id: 'mixed', name: 'Mixed Masala', desc: 'Custom blend', price: 2 },
+                    { id: 'roasted_spice', name: 'Roasted Spices', desc: 'Enhanced aroma', price: 3 }
+                ]
+            },
+            {
+                id: 7,
+                emoji: '🥥',
+                name: 'Coconut Oil',
+                subtitle: 'Pure nariyal tel for cooking and hair',
+                price: 8,
+                unit: 'kg',
+                imageClass: 'img-coconut',
+                aiPrompt: 'Coconut oil (nariyal tel). Explain: 1) Extraction process from fresh coconuts, 2) Health benefits for cooking and skin/hair, 3) Difference between virgin and refined coconut oil, 4) Traditional uses in Indian households. Keep it informative and friendly.',
+                options: [
+                    { id: 'virgin', name: 'Virgin Oil', desc: 'First press, best quality', price: 0 },
+                    { id: 'refined', name: 'Refined Oil', desc: 'Clean and pure', price: 0 },
+                    { id: 'hair_grade', name: 'Hair Grade', desc: 'Extra pure for hair', price: 2 }
+                ]
+            },
+            {
+                id: 8,
+                emoji: '🌻',
+                name: 'Sunflower Oil',
+                subtitle: 'Healthy cooking oil for daily use',
+                price: 6,
+                unit: 'kg',
+                imageClass: 'img-sunflower',
+                aiPrompt: 'Sunflower oil. Explain: 1) Extraction process and purity, 2) Health benefits (vitamin E, low saturated fat), 3) Best uses for frying and cooking, 4) Comparison with other cooking oils. Keep it informative and friendly.',
+                options: [
+                    { id: 'refined_sun', name: 'Refined Oil', desc: 'For daily cooking', price: 0 },
+                    { id: 'cold_press_sun', name: 'Cold Pressed', desc: 'Natural extraction', price: 2 },
+                    { id: 'fortified', name: 'Vitamin Fortified', desc: 'Extra nutrients', price: 3 }
+                ]
+            }
+        ];
+
+        let selectedProduct = null;
+        let selectedOptions = [];
+        let currentQty = 5;
+        let holdTimer = null;
+        let isHolding = false;
+
+        // ===== RENDER PRODUCTS =====
+        const grid = document.getElementById('productsGrid');
+        products.forEach(p => {
+            const card = document.createElement('div');
+            card.className = 'product-card animate-in';
+            card.innerHTML = `
+                <div class="ai-hint">🤖</div>
+                <div class="hold-indicator"></div>
+                <div class="product-image ${p.imageClass}"></div>
+                <div class="product-info">
+                    <div class="product-name">${p.name}</div>
+                    <div class="product-desc">${p.subtitle}</div>
+                    <div class="product-price">₹${p.price}/${p.unit} <span>• Bring your raw</span></div>
+                    <button class="order-btn" onclick="event.stopPropagation(); openOrderPage(${p.id})">Order Now →</button>
+                </div>
+            `;
+
+            // Long press detection
+            card.addEventListener('touchstart', (e) => startHold(e, p, card), {passive: true});
+            card.addEventListener('touchend', () => endHold(card));
+            card.addEventListener('touchcancel', () => endHold(card));
+            card.addEventListener('mousedown', (e) => startHold(e, p, card));
+            card.addEventListener('mouseup', () => endHold(card));
+            card.addEventListener('mouseleave', () => endHold(card));
+
+            // Click to order (if not holding)
+            card.addEventListener('click', (e) => {
+                if (!isHolding) openOrderPage(p.id);
+            });
+
+            grid.appendChild(card);
+        });
+
+        // ===== HOLD TO LEARN =====
+        function startHold(e, product, card) {
+            isHolding = false;
+            card.classList.add('holding');
+            
+            holdTimer = setTimeout(() => {
+                isHolding = true;
+                showAiPopup(product);
+            }, 800);
+        }
+
+        function endHold(card) {
+            clearTimeout(holdTimer);
+            card.classList.remove('holding');
+        }
+
+        // ===== AI POPUP =====
+        async function showAiPopup(product) {
+            document.querySelectorAll('.product-card').forEach(c => c.classList.remove('holding'));
+            document.getElementById('homePage').classList.add('blurred');
+            document.getElementById('aiPopup').classList.add('active');
+
+            // Show loading
+            document.getElementById('aiContent').innerHTML = `
+                <div class="ai-loading">
+                    <div class="ai-dots"><span></span><span></span><span></span></div>
+                    <span>Learning about ${product.name}...</span>
+                </div>
+            `;
+
+            // Call AI API
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${API_KEY}`
+                    },
+                    body: JSON.stringify({
+                        model: 'moonshot-v1-8k',
+                        messages: [
+                            {
+                                role: 'system',
+                                content: 'You are a knowledgeable assistant about Indian food, grains, and traditional grinding services. Provide detailed, accurate, and friendly information.'
+                            },
+                            {
+                                role: 'user',
+                                content: product.aiPrompt
+                            }
+                        ],
+                        temperature: 0.7
+                    })
+                });
+
+                const data = await response.json();
+                const aiText = data.choices[0].message.content;
+
+                // Format and display
+                const sections = aiText.split('\n\n').filter(s => s.trim());
+                let html = '';
+
+                sections.forEach(section => {
+                    const lines = section.split('\n').filter(l => l.trim());
+                    if (lines.length > 0) {
+                        const title = lines[0].replace(/^[0-9]+\.\s*/, '').replace(/\*\*/g, '');
+                        const content = lines.slice(1).join(' ').replace(/\*\*/g, '');
+                        
+                        html += `
+                            <div class="ai-section">
+                                <h4>📖 ${title}</h4>
+                                <p>${content}</p>
+                            </div>
+                        `;
+                    }
+                });
+
+                document.getElementById('aiContent').innerHTML = html;
+
+            } catch (error) {
+                // Fallback content if API fails
+                document.getElementById('aiContent').innerHTML = `
+                    <div class="ai-section">
+                        <h4>🌾 About ${product.name}</h4>
+                        <p>${product.name} is a traditional Indian staple. Our grinding service ensures you get fresh, pure, and hygienic output from your raw ingredients. We use modern equipment with traditional care to preserve all nutrients and natural flavors.</p>
+                    </div>
+                    <div class="ai-section">
+                        <h4>💡 Did You Know?</h4>
+                        <p>Freshly ground flour and oils retain more nutrients compared to store-bought packaged products. The natural oils and vitamins begin to degrade after grinding, which is why grinding at home or at a local mill is always better for your health.</p>
+                    </div>
+                    <div class="ai-section">
+                        <h4>✨ Benefits</h4>
+                        <p>• 100% pure with no additives<br>• Preserves natural nutrients<br>• Customizable texture (fine/coarse)<br>• Fresh aroma and taste<br>• Cost-effective compared to packaged goods</p>
+                    </div>
+                `;
+            }
+        }
+
+        function closeAiPopup() {
+            document.getElementById('aiPopup').classList.remove('active');
+            document.getElementById('homePage').classList.remove('blurred');
+        }
+
+        // ===== AI CHAT =====
+        function openAiChat() {
+            document.getElementById('aiChatOverlay').classList.add('active');
+        }
+
+        function closeAiChat() {
+            document.getElementById('aiChatOverlay').classList.remove('active');
+        }
+
+        async function sendAiMessage() {
+            const input = document.getElementById('aiChatInput');
+            const message = input.value.trim();
+            if (!message) return;
+
+            // Add user message
+            const messagesContainer = document.getElementById('aiChatMessages');
+            messagesContainer.innerHTML += `<div class="ai-message user">${message}</div>`;
+            input.value = '';
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+            // Show typing
+            const botId = 'typing-' + Date.now();
+            messagesContainer.innerHTML += `
+                <div class="ai-message bot" id="${botId}">
+                    <div class="ai-loading" style="padding: 0;">
+                        <div class="ai-dots"><span></span><span></span><span></span></div>
+                        <span>Thinking...</span>
+                    </div>
+                </div>
+            `;
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+            // Call API
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${API_KEY}`
+                    },
+                    body: JSON.stringify({
+                        model: 'moonshot-v1-8k',
+                        messages: [
+                            {
+                                role: 'system',
+                                content: 'You are an AI assistant for Sri Lakshmi Flour Mill. You help customers understand grinding services, food grains, health benefits, and pricing. Be friendly, informative, and concise. Always mention that we are a local village mill with traditional quality and modern hygiene.'
+                            },
+                            {
+                                role: 'user',
+                                content: message
+                            }
+                        ],
+                        temperature: 0.7
+                    })
+                });
+
+                const data = await response.json();
+                const reply = data.choices[0].message.content;
+
+                document.getElementById(botId).innerHTML = reply;
+
+            } catch (error) {
+                document.getElementById(botId).innerHTML = 
+                    'I apologize, but I am having trouble connecting right now. Please try again in a moment, or you can call us directly at +91 93826 96637 for immediate assistance.';
+            }
+
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        // ===== ORDER PAGE FUNCTIONS =====
+        function openOrderPage(productId) {
+            selectedProduct = products.find(p => p.id === productId);
+            selectedOptions = [];
+            currentQty = 5;
+
+            document.getElementById('orderHeroImage').className = `order-hero-image ${selectedProduct.imageClass}`;
+            document.getElementById('orderBigEmoji').textContent = selectedProduct.emoji;
+            document.getElementById('orderTitle').textContent = selectedProduct.name;
+            document.getElementById('orderSubtitle').textContent = selectedProduct.subtitle;
+            document.getElementById('orderPriceTag').textContent = `₹${selectedProduct.price} per ${selectedProduct.unit}`;
+
+            document.getElementById('customerName').value = '';
+            document.getElementById('customerPhone').value = '';
+            document.getElementById('qtySlider').value = 5;
+            updateQuantity(5);
+
+            const optionsList = document.getElementById('optionsList');
+            optionsList.innerHTML = '';
+            selectedProduct.options.forEach(opt => {
+                optionsList.innerHTML += `
+                    <div class="option-item" onclick="toggleOption('${opt.id}', this)">
+                        <div class="option-checkbox">✓</div>
+                        <div class="option-text">
+                            <h4>${opt.name}</h4>
+                            <p>${opt.desc}</p>
+                        </div>
+                        <div class="option-price">${opt.price > 0 ? '+₹' + opt.price : 'Free'}</div>
+                    </div>
+                `;
+            });
+
+            updateTotal();
+
+            document.getElementById('homePage').classList.remove('active');
+            document.getElementById('homePage').classList.add('hidden-left');
+            document.getElementById('orderPage').classList.remove('hidden-right');
+            document.getElementById('orderPage').classList.add('active');
+            document.getElementById('orderPage').scrollTop = 0;
+        }
+
+        function goBack() {
+            document.getElementById('orderPage').classList.remove('active');
+            document.getElementById('orderPage').classList.add('hidden-right');
+            document.getElementById('homePage').classList.remove('hidden-left');
+            document.getElementById('homePage').classList.add('active');
+        }
+
+        function shareProduct() {
+            if (navigator.share) {
+                navigator.share({
+                    title: selectedProduct.name,
+                    text: `Order ${selectedProduct.name} from Sri Lakshmi Flour Mill`,
+                    url: window.location.href
+                });
+            } else {
+                alert('Share this page with friends!');
+            }
+        }
+
+        function toggleOption(optionId, element) {
+            element.classList.toggle('selected');
+            const option = selectedProduct.options.find(o => o.id === optionId);
+            
+            if (element.classList.contains('selected')) {
+                selectedOptions.push(option);
+            } else {
+                selectedOptions = selectedOptions.filter(o => o.id !== optionId);
+            }
+            
+            updateTotal();
+        }
+
+        function updateQuantity(val) {
+            currentQty = parseFloat(val);
+            
+            if (currentQty < 1) {
+                document.getElementById('qtyNumber').textContent = (currentQty * 1000).toFixed(0);
+                document.getElementById('qtyUnit').textContent = 'grams';
+            } else {
+                document.getElementById('qtyNumber').textContent = currentQty.toFixed(currentQty % 1 === 0 ? 0 : 1);
+                document.getElementById('qtyUnit').textContent = 'kg';
+            }
+
+            document.querySelectorAll('.qty-preset').forEach(btn => {
+                btn.classList.remove('active');
+                const btnQty = parseFloat(btn.textContent);
+                if (btnQty === currentQty) btn.classList.add('active');
+            });
+
+            updateTotal();
+        }
+
+        function setQuantity(qty) {
+            document.getElementById('qtySlider').value = qty;
+            updateQuantity(qty);
+        }
+
+        function updateTotal() {
+            const basePrice = selectedProduct.price * currentQty;
+            const optionsPrice = selectedOptions.reduce((sum, opt) => sum + opt.price, 0);
+            const total = basePrice + optionsPrice;
+
+            document.getElementById('totalService').textContent = selectedProduct.name;
+            
+            let qtyText = currentQty < 1 ? `${(currentQty * 1000).toFixed(0)} grams` : `${currentQty.toFixed(currentQty % 1 === 0 ? 0 : 1)} kg`;
+            document.getElementById('totalQty').textContent = qtyText;
+            
+            document.getElementById('totalRate').textContent = `₹${selectedProduct.price}/${selectedProduct.unit}`;
+
+            if (selectedOptions.length > 0) {
+                document.getElementById('optionsRow').style.display = 'flex';
+                document.getElementById('totalOptions').textContent = selectedOptions.map(o => o.name).join(', ');
+            } else {
+                document.getElementById('optionsRow').style.display = 'none';
+            }
+
+            document.getElementById('totalAmount').textContent = `₹${total.toFixed(0)}`;
+        }
+
+        function sendOrder() {
+            const name = document.getElementById('customerName').value.trim();
+            const phone = document.getElementById('customerPhone').value.trim();
+
+            if (!name) {
+                alert('Please enter your name');
+                return;
+            }
+            if (!phone) {
+                alert('Please enter your phone number');
+                return;
+            }
+
+            let qtyText = currentQty < 1 ? `${(currentQty * 1000).toFixed(0)} grams` : `${currentQty.toFixed(currentQty % 1 === 0 ? 0 : 1)} kg`;
+            
+            let optionsText = selectedOptions.length > 0 
+                ? selectedOptions.map(o => o.name).join(', ') 
+                : 'Standard grinding';
+
+            const total = (selectedProduct.price * currentQty) + selectedOptions.reduce((sum, o) => sum + o.price, 0);
+
+            const message = `*New Order - Sri Lakshmi Flour Mill*%0A%0A` +
+                `*Customer:* ${name}%0A` +
+                `*Phone:* ${phone}%0A` +
+                `*Service:* ${selectedProduct.name}%0A` +
+                `*Quantity:* ${qtyText}%0A` +
+                `*Options:* ${optionsText}%0A` +
+                `*Total:* ₹${total.toFixed(0)}%0A%0A` +
+                `Please confirm my order. Thank you!`;
+
+            window.open(`https://wa.me/919382696637?text=${message}`, '_blank');
+        }
+
+        // ===== SCROLL ANIMATIONS =====
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationPlayState = 'running';
+                    entry.target.style.opacity = '1';
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.animate-in').forEach(el => observer.observe(el));
+    </script>
+
+</body>
+</html>
